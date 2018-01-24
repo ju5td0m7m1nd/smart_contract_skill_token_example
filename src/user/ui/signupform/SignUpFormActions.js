@@ -31,7 +31,7 @@ export function signUpUser(name) {
             .signup(name, { from: coinbase })
             .then(function(result) {
               // If no error, login user.
-              authenticationInstance
+              return authenticationInstance
                 .earnSkill(99, coinbase, { from: coinbase })
                 .then(() => {
                   return dispatch(loginUser());

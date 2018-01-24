@@ -19,9 +19,6 @@ let getWeb3 = new Promise(function(resolve, reject) {
     if (typeof web3 !== "undefined") {
       // Use Mist/MetaMask's provider.
       web3 = new Web3(web3.currentProvider);
-      web3.eth.getCoinbase((error, coinbase) => {
-        web3.eth.defaultAccount = coinbase;
-      });
       results = {
         web3Instance: web3
       };
@@ -35,10 +32,6 @@ let getWeb3 = new Promise(function(resolve, reject) {
       var provider = new Web3.providers.HttpProvider("http://127.0.0.1:8545");
 
       web3 = new Web3(provider);
-      web3.eth.getCoinbase((error, coinbase) => {
-        web3.eth.defaultAccount = coinbase;
-      });
-
       results = {
         web3Instance: web3
       };

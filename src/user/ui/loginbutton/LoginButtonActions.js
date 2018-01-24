@@ -40,7 +40,7 @@ export function loginUser() {
           authenticationInstance.login({from: coinbase})
           .then(function(result) {
             // If no error, login user.
-            var userName = web3.toUtf8(result)
+            var userName = web3.utils.toUtf8(result)
 
             dispatch(userLoggedIn({"name": userName}))
 
@@ -56,6 +56,7 @@ export function loginUser() {
             return browserHistory.push('/dashboard')
           })
           .catch(function(result) {
+            console.log(result)
             // If error, go to signup page.
             console.error('Wallet ' + coinbase + ' does not have an account!')
 
