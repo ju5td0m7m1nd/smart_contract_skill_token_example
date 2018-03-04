@@ -1,0 +1,4 @@
+export default {
+  APPEND_TASKS: "APPEND_TASKS",
+  ACHIEVE_TASK: "ACHIEVE_TASK"
+};

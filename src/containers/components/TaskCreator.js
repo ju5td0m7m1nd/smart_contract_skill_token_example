@@ -26,9 +26,12 @@ class TaskCreator extends React.Component {
   }
   _createTask = () => {
     const { skillPoints, taskName } = this.state;
-    
+
     if (skillPoints !== 0 && taskName !== "") {
-      this.props.createTask({ taskName, skillPoints });
+      this.props.createTask({
+        taskName,
+        skillPoints: parseInt(skillPoints, 10)
+      });
     }
   };
 }
