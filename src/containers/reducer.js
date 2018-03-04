@@ -5,7 +5,7 @@ const initialState = {
 const taskReducer = (state = initialState, action) => {
   switch (action.type) {
     case "APPEND_TASKS":
-      return { ...state, data: state.data.concat(...action.payload) };
+      return { ...state, data: action.payload };
     case "ACHIEVE_TASK":
       return state;
     default:

@@ -111,9 +111,10 @@ export async function getSkillPoint() {
         return console.error(error);
       }
 
-      const skillCount = web3.utils.toDecimal(
+      const skillPoints = web3.utils.toDecimal(
         await authInstance.getUserSkill.call(coinbase)
       );
+      console.log(skillPoints)
     });
   } else {
     console.error("Web3 is not initialized.");

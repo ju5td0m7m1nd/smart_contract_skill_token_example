@@ -19,7 +19,12 @@ contract Task is Killable {
     require(!(_authAddress == 0x0));
     _;
   }
-
+  modifier taskIsAvailable(uint key) {
+    if (!(tasks[key].done == false)) {
+       revert();
+    }
+    _;
+  }
   modifier checkUserSkillIsEnough(uint requiredSkill) {
     uint skPoints = authContract.getUserSkill(msg.sender);
     require(skPoints > requiredSkill);
@@ -52,6 +57,7 @@ contract Task is Killable {
   function finishTask(uint key)
   public
   ifAddressBinded
+  taskIsAvailable(key)
     returns(uint skillPoints) {
 
       authContract.earnSkill(tasks[key].skillPoints, msg.sender);
