@@ -5,7 +5,6 @@ import './zeppelin/lifecycle/Killable.sol';
 contract Authentication is Killable {
   struct User {
     bytes32 name;
-    uint skill;
   }
 
   mapping (address => User) public users;
@@ -24,20 +23,6 @@ contract Authentication is Killable {
 
     require(!(name == 0x0));
     _;
-  }
-
-  function earnSkill(uint skillPoint, address _to) public onlyExistingUser(_to) returns (uint) {
-    users[_to].skill += skillPoint;
-    return users[_to].skill;
-  }
-
-  function deductSkill(uint skillPoint, address _to) public onlyExistingUser(_to) returns (uint) {
-    users[_to].skill -= skillPoint;
-    return users[_to].skill;
-  }
-
-  function getUserSkill(address _sender) public onlyExistingUser(_sender) returns (uint) {
-    return users[_sender].skill;
   }
 
   function login() constant
