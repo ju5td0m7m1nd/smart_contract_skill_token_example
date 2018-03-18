@@ -60,10 +60,13 @@ export async function getTask(dispatch) {
           // 0x00 is false
           // 0x01 is true
           const isDone = web3.utils.toHex(result[2]);
+          const doneBy = web3.utils.toHex(result[3])
+          console.log(doneBy)
           payload.push({
             taskName,
             skillPoints,
-            isDone
+            isDone,
+            doneBy
           });
         }
         return dispatch({

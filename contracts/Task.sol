@@ -8,6 +8,7 @@ contract Task is Killable {
   struct TaskDetail {
     bytes32 taskName;
     uint skillPoints;
+    address doneBy;
     bool done;
   }
 
@@ -62,6 +63,7 @@ contract Task is Killable {
 
       authContract.earnSkill(tasks[key].skillPoints, msg.sender);
       tasks[key].done = true;
+      tasks[key].doneBy = msg.sender;
       return authContract.getUserSkill(msg.sender);
     }
 
@@ -76,8 +78,9 @@ contract Task is Killable {
   function getTask(uint key) public constant 
     returns ( bytes32 taskName,
     uint skillPoints,
-    bool done) {
-    return (tasks[key].taskName, tasks[key].skillPoints, tasks[key].done);
+    bool done,
+    uint256 doneBy ) {
+    return (tasks[key].taskName, tasks[key].skillPoints, tasks[key].done, uint256(tasks[key].doneBy));
   }
 
   function getTaskName(uint key) public returns (bytes32 name) {

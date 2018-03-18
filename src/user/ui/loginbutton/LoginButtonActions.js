@@ -12,6 +12,7 @@ function userLoggedIn(user) {
   }
 }
 
+
 export function loginUser() {
   let web3 = store.getState().web3.web3Instance
 
