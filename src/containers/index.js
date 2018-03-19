@@ -2,7 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import TaskCreator from "./components/TaskCreator";
 import Task from "./components/Task";
-import { createTask, getTask, getSkillPoint, finishTask } from "./actions/task";
+import {
+  createTask,
+  getTask,
+  getCurrentToken,
+  finishTask
+} from "./actions/task";
 
 class Main extends React.Component {
   constructor(props) {
@@ -11,7 +16,7 @@ class Main extends React.Component {
 
   async componentDidMount() {
     getTask(this.props.dispatch);
-    getSkillPoint();
+    getCurrentToken();
   }
 
   render() {

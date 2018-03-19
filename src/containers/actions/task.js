@@ -1,5 +1,6 @@
 import TaskContract from "../../../build/contracts/Task.json";
 import AuthenticationContract from "../../../build/contracts/Authentication.json";
+import FrankCoinContract from "../../../build/contracts/FrankCoin.json";
 import store from "../../store";
 import actionTypes from "../actionTypes";
 
@@ -11,9 +12,9 @@ export async function createTask({ taskName, skillPoints }) {
   if (typeof web3 !== "undefined") {
     const task = contract(TaskContract);
     task.setProvider(web3.currentProvider);
-    const auth = contract(AuthenticationContract);
-    auth.setProvider(web3.currentProvider);
-    const authInstance = await auth.deployed();
+    const frankCoin = contract(FrankCoinContract);
+    frankCoin.setProvider(web3.currentProvider);
+    const coinInstance = await frankCoin.deployed();
     const taskInstance = await task.deployed();
     // Get current ethereum wallet.
     web3.eth.getCoinbase(async (error, coinbase) => {
@@ -22,7 +23,7 @@ export async function createTask({ taskName, skillPoints }) {
         return console.error(error);
       }
 
-      await taskInstance.bindAuthAddress(authInstance.address, {
+      await taskInstance.bindCoinAddress(coinInstance.address, {
         from: coinbase
       });
       taskInstance
@@ -60,8 +61,8 @@ export async function getTask(dispatch) {
           // 0x00 is false
           // 0x01 is true
           const isDone = web3.utils.toHex(result[2]);
-          const doneBy = web3.utils.toHex(result[3])
-          console.log(doneBy)
+          const doneBy = web3.utils.toHex(result[3]);
+          console.log(doneBy);
           payload.push({
             taskName,
             skillPoints,
@@ -101,23 +102,20 @@ export async function finishTask(taskId) {
   }
 }
 
-export async function getSkillPoint() {
+export async function getCurrentToken() {
   let web3 = store.getState().web3.web3Instance;
   if (typeof web3 !== "undefined") {
     // Get current ethereum wallet.
     web3.eth.getCoinbase(async (error, coinbase) => {
-      const auth = contract(AuthenticationContract);
-      auth.setProvider(web3.currentProvider);
-      const authInstance = await auth.deployed();
+      const coin = contract(FrankCoinContract);
+      coin.setProvider(web3.currentProvider);
+      const coinInstance = await coin.deployed();
       // Log errors, if any.
       if (error) {
         return console.error(error);
       }
-
-      const skillPoints = web3.utils.toDecimal(
-        await authInstance.getUserSkill.call(coinbase)
-      );
-      console.log(skillPoints)
+      const result = await coinInstance.balanceOf.call(coinbase);
+      console.log(result.toNumber());
     });
   } else {
     console.error("Web3 is not initialized.");
