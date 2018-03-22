@@ -44,16 +44,24 @@ contract("Authentication", function(accounts) {
       "Task name doesn't match"
     );
   });
-  it("...test approve task", async function() {
+  it("...test request task", async function() {
     const task = await Task.deployed();
-    const result = await task.acceptTask.call(accounts[1], 0, {
+    const result = await task.requestTask.call(accounts[1], 0, {
+      from: accounts[1]
+    });
+    assert.equal(result, accounts[1], "Task not requested");
+  });
+  it("...test accept task", async function() {
+    const task = await Task.deployed();
+    await task.requestTask(accounts[1], 0);
+    const result = await task.acceptTask.call(0, {
       from: accounts[0]
     });
     assert.equal(result, accounts[1], "Task not accepted");
   });
   it("...finish task", async function() {
     const task = await Task.deployed();
-    await task.acceptTask(accounts[1], 0, {
+    await task.acceptTask(0, {
       from: accounts[0]
     });
     const result = await task.finishTask.call(0, { from: accounts[1] });
@@ -64,7 +72,11 @@ contract("Authentication", function(accounts) {
     const task = await Task.deployed();
     await task.finishTask(0, { from: accounts[1] });
     const result = await task.getTask.call(0);
-    assert.equal(web3.toUtf8(result[0]), "Landing Page", "Task name not matched");
+    assert.equal(
+      web3.toUtf8(result[0]),
+      "Landing Page",
+      "Task name not matched"
+    );
     assert.equal(result[1], 30, "Task token not matched");
     assert.equal(result[2], true, "Task status not matched");
   });

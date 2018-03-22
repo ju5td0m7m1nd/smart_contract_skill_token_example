@@ -9,8 +9,10 @@ contract Task is Killable {
   struct TaskDetail {
     bytes32 taskName;
     uint skillPoints;
+    address requestBy;
     address acceptBy;
     address from ;
+    bool pending;
     bool done;
   }
 
@@ -41,6 +43,11 @@ contract Task is Killable {
     _;
   }
 
+  modifier isTaskOwner(uint key) {
+    require(tasks[key].from == msg.sender);
+    _;
+  }
+
   function bindCoinAddress (address addr) public returns (address coinAddress) {
     _coinAddress = addr;
     coinContract = FrankCoin(_coinAddress);
@@ -57,13 +64,23 @@ contract Task is Killable {
     newTask.taskName = taskName;
     newTask.skillPoints = skillPoints;
     newTask.done = false;
+    newTask.pending = false;
     newTask.from = msg.sender;
 
     return tasks.push(newTask) - 1;
-  } 
+  }
 
-  function acceptTask(address addr, uint key) public returns (address acceptBy) {
-    tasks[key].acceptBy = addr;
+  function requestTask(address addr, uint key) public returns (address acceptBy) {
+    tasks[key].requestBy = addr;
+    tasks[key].pending = true;
+    return tasks[key].requestBy;
+  }
+
+  function acceptTask(uint key) 
+  public
+  isTaskOwner(key)
+   returns (address acceptBy) {
+    tasks[key].acceptBy = tasks[key].requestBy;
     return tasks[key].acceptBy;
   }
 
@@ -73,7 +90,6 @@ contract Task is Killable {
   taskIsAvailable(key)
   finishBySamePerson(key)
     returns(address _from, address _to) {
-
       tasks[key].done = true;
       return (tasks[key].from, tasks[key].acceptBy);
     }
@@ -90,8 +106,9 @@ contract Task is Killable {
     returns ( bytes32 taskName,
     uint skillPoints,
     bool done,
-    uint256 acceptBy ) {
-    return (tasks[key].taskName, tasks[key].skillPoints, tasks[key].done, uint256(tasks[key].acceptBy));
+    uint256 requestBy,
+    bool pending ) {
+    return (tasks[key].taskName, tasks[key].skillPoints, tasks[key].done, uint256(tasks[key].requestBy), tasks[key].pending);
   }
 
   function getTaskName(uint key) public returns (bytes32 name) {
